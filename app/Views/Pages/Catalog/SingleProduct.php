@@ -17,7 +17,10 @@
                 <a href="<?= base_url() . '/catalog/cari/' . $produk['category'] ?>" class="btn btn-sm btn-info">Kategori <span class="badge badge-light"><?= $produk['category'] ?></span></a>
                 <hr>
                 <p class="text-muted">
-                    Oleh : <b class=""><?= $produk['name'] ?></b>
+                    <div class="d-flex justify-content-between">
+                        <div>Oleh : <b class=""><?= $produk['name'] ?></b></div>
+                        <div> Stok : <b class="<?= ($produk['in_stock'] != 0) ? 'text-info' : 'text-warning' ?>"><?= ($produk['in_stock'] != 0) ? 'Tersedia' : 'Kosong' ?></b> </div>
+                    </div>
                     <br>
                     <?= $produk['description'] ?>
                 </p>

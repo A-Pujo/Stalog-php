@@ -1,11 +1,11 @@
 <!-- Navbar -->
-<nav class="navbar fixed-top navbar-expand navbar-light">
+<nav class="navbar fixed-top navbar-expand navbar-light shadow" style="background-color: rgba(255, 255, 255, 0.3);">
     <a class="navbar-brand d-flex" href="<?= base_url() ?>">
         <img src="<?= base_url('assets/img/shop.png') ?>" width="30" height="30" alt="">
         <span class="align-self-center">&nbsp;Stan Catalog</span>
     </a>
     <ul class="navbar-nav ml-auto">
-        <?php if(logged_in() && ! in_groups('store_owner')) : ?>
+        <?php if(logged_in() && in_groups('guests')) : ?>
         <li class="nav-item mr-3">
             <a class="nav-link" href="<?= base_url() . '/catalog/buka' ?>">Buka Toko!</a>
         </li>

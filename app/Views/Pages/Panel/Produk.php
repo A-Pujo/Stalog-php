@@ -49,30 +49,35 @@
                             <input class="form-control" id="title_hash" type="text" value="" readonly name="title_hash">
                         </div>
                         <div class="form-group">
-                            <label for="category">Category</label>
-                            <input class="form-control" type="text"id="category" name="category">
+                            <label for="category">Kategori</label>
+                            <select class="custom-select" id="category" name="category">
+                                <option selected>Pilih Kategori</option>
+                                <?php foreach($category as $ct) : ?>
+                                <option value="<?= $ct['id'] ?>"><?= $ct['category'] ?></option>
+                                <?php endforeach; ?>
+                            </select>
                         </div>
                         <div class="form-group">
                             <label for="description">Deskripsi</label>
                             <textarea name="description" class="form-control" id="description" rows="3"></textarea>
                         </div>
                         <div class="custom-file mb-3">
-                            <input type="file" class="custom-file-input" id="customFile" name="customFile" onchange="filePreview()">
+                            <input type="file" class="custom-file-input" id="customFile" name="customFile[]" onchange="filePreview()" multiple>
                             <label class="custom-file-label" for="customFile">Pilih gambar</label>
                         </div>
                         <div class="form-group">
                             <label for="harga">Harga</label>
-                            <input type="text" class="form-control" id="harga" name="price">
+                            <input type="text" class="form-control" id="harga" name="price" placeholder="20000">
                         </div>
                         <div class="form-group">
                             <div class="form-check-inline">
-                                <input class="form-check-input" type="checkbox" value="1" id="is_active" name="is_active">
+                                <input class="form-check-input" type="checkbox" value="1" id="is_active" name="is_active" checked>
                                 <label class="form-check-label" for="is_active">
                                     Aktif ?
                                 </label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" value="1" id="stock" name="in_stock">
+                                <input class="form-check-input" type="checkbox" value="1" id="stock" name="in_stock" checked>
                                 <label class="form-check-label" for="stock">
                                     In Stock ?
                                 </label>
@@ -105,7 +110,7 @@
                                 <th>Stok</th>
                                 <th>Aktif</th>
                                 <th>Toko</th>
-                                <?= (in_groups('store_owner')) ? '<th>Aksi</th>' : '' ?>
+                                <?= (in_groups('store_owner') || in_groups('admin')) ? '<th>Aksi</th>' : '' ?>
                             </tr>
                         </thead>
                         <tfoot>
@@ -116,7 +121,7 @@
                                 <th>Stok</th>
                                 <th>Aktif</th>
                                 <th>Toko</th>
-                                <?= (in_groups('store_owner')) ? '<th>Aksi</th>' : '' ?>
+                                <?= (in_groups('store_owner') || in_groups('admin')) ? '<th>Aksi</th>' : '' ?>
                             </tr>
                         </tfoot>
                         <tbody>
@@ -128,14 +133,12 @@
                                 <td><?= ($k['in_stock'] == 1) ? 'True' : 'False' ?></td>
                                 <td><?=  ($k['is_active'] == 1) ? 'True' : 'False'  ?></td>
                                 <td><?= (in_groups('admin')) ? $k['name'] : $toko['name'] ?></td>
-                                <?php if(in_groups('store_owner')) : ?>
                                 <td>
-                                    <a href="<?= base_url('panel/disableproduk/'.$k['id']) ?>" class="btn btn-danger btn-circle btn-sm" onclick="return confirm('Apa anda yakin ingin menonaktifkan produk ini?')"><i class="fas fa-times"></i></a>
-                                    <a href="<?= base_url('panel/enableproduk/'.$k['id']) ?>" class="btn btn-success btn-circle btn-sm" onclick="return confirm('Apa anda yakin ingin mengaktifkan produk ini?')"><i class="fas fa-check"></i></a>
-                                    <a href="<?= base_url('panel/emptyproduk/'.$k['id']) ?>" class="btn btn-danger btn-circle btn-sm" onclick="return confirm('Apa produk ini benar-benar out of stock?')"><i class="fas fa-box-open"></i></a>
-                                    <a href="<?= base_url('panel/repopulateproduk/'.$k['id']) ?>" class="btn btn-success btn-circle btn-sm" onclick="return confirm('Apa produk ini benar-benar sudah tersedia?')"><i class="fab fa-stack-overflow"></i></a>
+                                    <a href="<?= base_url('panel/disableproduk/'.$k['idp']) ?>" class="btn btn-danger btn-circle btn-sm" onclick="return confirm('Apa anda yakin ingin menonaktifkan produk ini?')"><i class="fas fa-times"></i></a>
+                                    <a href="<?= base_url('panel/enableproduk/'.$k['idp']) ?>" class="btn btn-success btn-circle btn-sm" onclick="return confirm('Apa anda yakin ingin mengaktifkan produk ini?')"><i class="fas fa-check"></i></a>
+                                    <a href="<?= base_url('panel/emptyproduk/'.$k['idp']) ?>" class="btn btn-danger btn-circle btn-sm" onclick="return confirm('Apa produk ini benar-benar out of stock?')"><i class="fas fa-box-open"></i></a>
+                                    <a href="<?= base_url('panel/repopulateproduk/'.$k['idp']) ?>" class="btn btn-success btn-circle btn-sm" onclick="return confirm('Apa produk ini benar-benar sudah tersedia?')"><i class="fab fa-stack-overflow"></i></a>
                                 </td>
-                                <?php endif; ?>
                             </tr>
                             <?php endforeach; ?>
                         </tbody>

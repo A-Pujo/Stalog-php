@@ -4,25 +4,26 @@ namespace App\Controllers;
 
 class Catalog extends BaseController
 {
-    protected $TOKO, $PRODUK;
+    protected $TOKO, $PRODUK, $CATEGORY, $LOKASI;
 
     function __construct()
     {
         $this->TOKO = new \App\Models\M_Toko();
         $this->PRODUK = new \App\Models\M_Produk();
+        $this->CATEGORY = new \App\Models\M_Category();
+        $this->LOKASI = new \App\Models\M_Lokasi();
     }
 
     public function index()
     {
-        $produk = $this->PRODUK->join('store', 'store.id = products.store_id')->where(['is_active' => 1, 'active' => 1,]);
+        $produk = $this->PRODUK->join('store', 'store.id = products.store_id')->join('product_category', 'product_category.id = products.category_id')->where(['is_active' => 1, 'active' => 1,]);
         $data = [
             'title' => 'Beranda',
             'produk' => $produk->paginate(12),
             'pager' => $produk->pager,
+            'lokasi' => $this->LOKASI->findAll(),
+            'kategori' => $this->CATEGORY->findAll(),
         ];
-
-        $category = $this->PRODUK->findColumn('category');
-        $data['category'] = array_unique($category);
 
         echo view('Components/Catalog/Header', $data);
         echo view('Components/Catalog/Navbar', $data);
@@ -36,23 +37,41 @@ class Catalog extends BaseController
         return redirect()->to(base_url());
     }
 
-    public function cari($category = 'Kategori...', $search = null)
+    public function cari($category = 'Kategori..', $lokasi = 'Lokasi..', $search = null)
     {
+        // dd($this->request->getGet());
         $produk = $this->PRODUK->join('store', 'store.id = products.store_id')->where(['is_active' => 1, 'active' => 1,]);
 
         $category = ($this->request->getVar('category')) ? $this->request->getVar('category') : $category;
+        $lokasi = ($this->request->getVar('regency')) ? $this->request->getVar('regency') : $category;
         $search = ($this->request->getVar('search')) ? $this->request->getVar('search') : $search;
 
-        if($category != 'Kategori...' && $search != null) {
-            $prd = $produk->like(['title' => $search, 'category' => $category]);
+        if($category != 'Kategori..' && $lokasi != 'Lokasi..' && $search != null) {
+            $prd = $produk->like(['title' => $search, 'category_id' => $category, 'regency_id' => $lokasi]);
         }
 
-        else if($category != 'Kategori...'){
-            $prd = $produk->like(['category' => $category]);
+        else if ($category != 'Kategori..' && $search != null){
+            $prd = $produk->like(['title' => $search, 'category_id' => $category]);
+        }
+
+        else if ($category != 'Kategori..' && $lokasi != 'Lokasi..'){
+            $prd = $produk->like(['category_id' => $category, 'regency_id' => $lokasi]);
+        }
+
+        else if ($search != null && $lokasi != 'Lokasi..'){
+            $prd = $produk->like(['title' => $search, 'regency_id' => $lokasi]);
+        }
+
+        else if ($category != 'Kategori..'){
+            $prd = $produk->like(['category_id' => $category]);
         }
 
         else if ($search != null) {
             $prd = $produk->like(['title' => $search])->orLike('description', $search);
+        }
+
+        else if ($lokasi != 'Lokasi..'){
+            $prd = $produk->like(['regency_id' => $lokasi]);
         }
 
         else{
@@ -63,10 +82,9 @@ class Catalog extends BaseController
             'title' => 'Pencarian',
             'produk' => $prd->paginate(12),
             'pager' => $prd->pager,
+            'kategori' => $this->CATEGORY->findAll(),
+            'lokasi' => $this->LOKASI->findAll(),
         ];
-
-        $categoryList = $this->PRODUK->findColumn('category');
-        $data['category'] = array_unique($categoryList);
 
         echo view('Components/Catalog/Header', $data);
         echo view('Components/Catalog/Navbar', $data);
@@ -76,10 +94,13 @@ class Catalog extends BaseController
 
     public function produk($title_hash = null)
     {
-        $produk = $this->PRODUK->join('store', 'store.id = products.store_id')->where(['title_hash' => $title_hash, 'is_active' => 1, 'active' => 1])->first();
+        $produk = $this->PRODUK->join('store', 'store.id = products.store_id')->join('product_category', 'product_category.id = products.category_id')->where(['title_hash' => $title_hash, 'is_active' => 1, 'active' => 1])->first();
         $data = [
             'title' => 'Barang',
             'produk' => $produk,
+            'kategori' => $this->CATEGORY->findAll(),
+            'lokasi' => $this->LOKASI->findAll(),
+            'lokasiToko' => $this->LOKASI->where(['id' => $produk['regency_id']])->first(),
         ];
 
         if($produk != null) {
@@ -87,10 +108,6 @@ class Catalog extends BaseController
             $orderText = urlencode($orderText);
             $data['orderText'] = $orderText;
         }
-        
-        
-        $categoryList = $this->PRODUK->findColumn('category');
-        $data['category'] = array_unique($categoryList);
 
         echo view('Components/Catalog/Header', $data);
         echo view('Components/Catalog/Navbar', $data);
@@ -106,6 +123,7 @@ class Catalog extends BaseController
 
         $data = [
             'title' => 'Buka Toko',
+            'lokasi' => $this->LOKASI->findAll(),
         ];
 
         echo view('Components/Catalog/Header', $data);
@@ -156,7 +174,7 @@ class Catalog extends BaseController
 				],
 			],
 			'store_image' => [
-				'rules' => 'max_size[store_image, 3000]|ext_in[store_image,jpg,png,jpeg]',
+				'rules' => 'max_size[store_image,3000]|ext_in[store_image,jpg,png,jpeg]',
 				'errors' => [
 					'max_size' => 'Ukuran gambar terlalu besar.',
 					'ext_in' => 'Format gambar tidak sesuai.',
@@ -181,6 +199,7 @@ class Catalog extends BaseController
 			'name' => $this->request->getVar('name'),
             'slug' => $this->request->getVar('slug'),
             'user_id' => user()->id,
+            'regency_id' => $this->request->getVar('regency'),
             'social_instagram' => $this->request->getVar('social_instagram'),
             'store_whatsapp' => $this->request->getVar('store_whatsapp'),
             'user_whatsapp' => $this->request->getVar('user_whatsapp'),

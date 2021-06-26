@@ -38,6 +38,14 @@
                             </div>
                             <input type="hidden" id="user_id" name="user_id" value="<?= user()->id ?>">
                             <div class="form-group">
+                                <label for="inputGroupSelect05">Lokasi</label>
+                                <select class="js-example-basic-single custom-select" id="inputGroupSelect05" name="regency">
+                                    <?php foreach($lokasi as $lk) : ?>
+                                    <option value="<?= $lk['id'] ?>"><?= $lk['name'] ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <div class="form-group">
                                 <label for="social_instagram">Instagram</label>
                                 <input type="text" class="form-control" id="social_instagram" placeholder="pknstan" name="social_instagram">
                             </div>

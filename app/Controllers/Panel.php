@@ -4,12 +4,14 @@ namespace App\Controllers;
 
 class Panel extends BaseController
 {
-    protected $TOKO, $PRODUK, $GROUPUSER;
+    protected $TOKO, $PRODUK, $CATEGORY, $LOKASI, $GROUPUSER;
 
     function __construct()
     {
         $this->TOKO = new \App\Models\M_Toko();
         $this->PRODUK = new \App\Models\M_Produk();
+        $this->CATEGORY = new \App\Models\M_Category();
+        $this->LOKASI = new \App\Models\M_Lokasi();
         $this->GROUPUSER = new \App\Models\M_Group_User();
     }
 
@@ -62,7 +64,7 @@ class Panel extends BaseController
             $data = [
                 'title' => 'Produk',
                 'activeMenu' => '2.1',
-                'produk' => $this->PRODUK->join('store', 'store.id = products.store_id')->findAll(),
+                'produk' => $this->PRODUK->join('store', 'store.id = products.store_id')->join('product_category', 'product_category.id = products.category_id')->findAll(),
             ];
 
         }
@@ -74,7 +76,8 @@ class Panel extends BaseController
             $data = [
                 'title' => 'Produk',
                 'activeMenu' => '2.1',
-                'produk' => $this->PRODUK->where(['store_id' => $toko['id']])->findAll(),
+                'produk' => $this->PRODUK->where(['store_id' => $toko['id']])->join('product_category', 'product_category.id = products.category_id')->findAll(),
+                'category' => $this->CATEGORY->findAll(),
                 'toko' => $toko,
             ];
         }
@@ -134,6 +137,7 @@ class Panel extends BaseController
             'title' => 'Profil',
             'activeMenu' => '',
             'toko' => $this->TOKO->where(['user_id' => user()->id])->first(),
+            'lokasi' => $this->LOKASI->findAll(),
         ];
 
         echo view('Components/Panel/Header', $data);
@@ -214,6 +218,7 @@ class Panel extends BaseController
             'id' => $id,
 			'name' => $this->request->getVar('name'),
             'slug' => $this->request->getVar('slug'),
+            'regency_id' => $this->request->getVar('regency'),
             'social_instagram' => $this->request->getVar('social_instagram'),
             'store_whatsapp' => $this->request->getVar('store_whatsapp'),
             'user_whatsapp' => $this->request->getVar('user_whatsapp'),
@@ -232,6 +237,8 @@ class Panel extends BaseController
         }
 
         $toko = $this->TOKO->where(['user_id' => user()->id])->first();
+
+        // dd($this->request->getPost());
 
         if(!$this->validate([
 			'title' => [
@@ -254,7 +261,7 @@ class Panel extends BaseController
                 ],
             ],
 			'customFile' => [
-				'rules' => 'uploaded[customFile]|max_size[customFile, 3000]|ext_in[customFile,jpg,png,jpeg]',
+				'rules' => 'uploaded[customFile]|max_size[customFile,3000]|ext_in[customFile,jpg,png,jpeg]',
 				'errors' => [
 					'uploaded' => 'Gambar tidak dipilih.',
 					'max_size' => 'Ukuran gambar terlalu besar.',
@@ -273,15 +280,25 @@ class Panel extends BaseController
 		}
 
 		// Upload file
-		$file = $this->request->getFile('customFile');
-		$fileName = $file->getRandomName();
-		$file->move('assets/uploads/product_image/', $fileName);
+        $fileName = '';
+        if($imagefile = $this->request->getFiles())
+        {
+            foreach($imagefile['customFile'] as $img)
+            {
+                if ($img->isValid() && ! $img->hasMoved())
+                {
+                    $newName = $img->getRandomName();
+                    $img->move('assets/uploads/product_image/', $newName);
+                    $fileName .= $newName . ';';
+                }
+            }
+        }
 
 		$this->PRODUK->save([
             'store_id' => $toko['id'],
 			'title' => $this->request->getVar('title'),
             'title_hash' => $this->request->getVar('title_hash'),
-            'category' => $this->request->getVar('category'),
+            'category_id' => (int)$this->request->getVar('category'),
             'description' => $this->request->getVar('description'),
 			'image' => $fileName,
             'price' => $this->request->getVar('price'),
@@ -334,14 +351,11 @@ class Panel extends BaseController
 
     public function disableproduk($id)
     {
-        if (! in_groups('store_owner')) {
+        if (in_groups('guests')) {
             return redirect()->to(base_url());
         }
-        
-        $this->PRODUK->save([
-            'id' => $id,
-            'is_active' => 0,
-        ]);
+
+        $this->PRODUK->where(['idp' => $id])->update(null, ['is_active' => 0,]);
 
         $this->session->setFlashdata('pesan', 'Produk berhasil dinonaktifkan.');
 
@@ -350,30 +364,24 @@ class Panel extends BaseController
 
     public function emptyproduk($id)
     {
-        if (! in_groups('store_owner')) {
+        if (in_groups('guests')) {
             return redirect()->to(base_url());
         }
         
-        $this->PRODUK->save([
-            'id' => $id,
-            'in_stock' => 0,
-        ]);
+        $this->PRODUK->where(['idp' => $id])->update(null, ['in_stock' => 0,]);
 
-        $this->session->setFlashdata('pesan', 'Produk berhasil dinonaktifkan.');
+        $this->session->setFlashdata('pesan', 'Produk berhasil dikosongkan.');
 
 		return redirect()->to('/panel/produk');
     }
 
     public function enableproduk($id)
     {
-        if (! in_groups('store_owner')) {
+        if (in_groups('guests')) {
             return redirect()->to(base_url());
         }
         
-        $this->PRODUK->save([
-            'id' => $id,
-            'is_active' => 1,
-        ]);
+        $this->PRODUK->where(['idp' => $id])->update(null, ['is_active' => 1,]);
 
         $this->session->setFlashdata('pesan', 'Produk berhasil diaktifkan.');
 
@@ -382,14 +390,11 @@ class Panel extends BaseController
 
     public function repopulateproduk($id)
     {
-        if (! in_groups('store_owner')) {
+        if (in_groups('guests')) {
             return redirect()->to(base_url());
         }
         
-        $this->PRODUK->save([
-            'id' => $id,
-            'in_stock' => 1,
-        ]);
+        $this->PRODUK->where(['idp' => $id])->update(null, ['in_stock' => 1,]);
 
         $this->session->setFlashdata('pesan', 'Data produk berhasil diubah.');
 

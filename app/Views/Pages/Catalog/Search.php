@@ -73,7 +73,7 @@
 </style>
 
 <div class="container mt-5 p-2">
-    <div class="row">
+    <div class="row mt-5">
         <div class="col-lg-3"></div>
         <div class="col-lg-6 col-sm-12">
             <img src="<?= base_url('assets/img/search.svg') ?>" class="rounded mx-auto d-block w-100">
@@ -111,16 +111,25 @@
         <!-- search bar -->
         <?= form_open(base_url() . '/catalog/cari', ['autocomplete' => 'off', 'method' => 'get']) ?>
             <?= csrf_field() ?>
-            <div class="input-group my-4">
-                <div class="input-group-prepend">
-                    <select class="custom-select" id="inputGroupSelect04" name="category">
-                        <option selected>Kategori...</option>
-
-                        <?php foreach($category as $c) : ?>
-                        <option value="<?= $c ?>"><?= $c ?></option>
+            <div class="input-group row my-4">
+                <div class="col">
+                    <select class="js-example-basic-single custom-select" id="inputGroupSelect04" name="category">
+                        <option>Kategori..</option>
+                        <?php foreach($kategori as $c) : ?>
+                        <option value="<?= $c['id'] ?>"><?= $c['category'] ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>
+                <div class="col">
+                    <select class="js-example-basic-single custom-select" id="inputGroupSelect05" name="regency">
+                        <option>Lokasi..</option>
+                        <?php foreach($lokasi as $lk) : ?>
+                        <option value="<?= $lk['id'] ?>"><?= $lk['name'] ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+            </div>
+            <div class="input-group my-4">
                 <input type="text" class="form-control" placeholder="Cari di sini." name="search">
                 <div class="input-group-append">
                     <button class="btn btn-outline-secondary" type="submit" id="button-addon1"><i class="fas fa-search"></i></button>
@@ -133,10 +142,13 @@
     <!-- produk -->
     <div class="container">
         <div class="row">
-            <?php foreach($produk as $k) : ?>
+            <?php 
+            foreach($produk as $k) : 
+            $k['image'] = explode(';', $k['image']);
+            ?>
             <div class="col-lg-3 my-2">
                 <div class="card shadow-sm">
-                    <img class="card-img-top" src="<?= base_url() . '/assets/uploads/product_image/' . $k['image'] ?>" alt="Card image cap">
+                    <a href="<?= base_url() . '/catalog/produk/' . $k['title_hash'] ?>"><img class="card-img-top" src="<?= base_url() . '/assets/uploads/product_image/' . $k['image'][0] ?>" alt="Card image cap"></a>
                     <div class="card-body">
                         <h5 class="card-title"><a href="<?= base_url() . '/catalog/produk/' . $k['title_hash'] ?>"><?= $k['title'] ?></a></h5>
                         <p class="card-text"><?= (strlen($k['description']) > 30) ? substr($k['description'], 0, 30) . '..' : $k['description'] ?></p>

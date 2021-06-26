@@ -48,6 +48,14 @@
                             <input class="form-control" id="slug" type="text" value="<?= $toko['name'] ?>" readonly name="slug">
                         </div>
                         <div class="form-group">
+                            <label for="inputGroupSelect05">Lokasi</label>
+                            <select class="js-example-basic-single custom-select" id="inputGroupSelect05" name="regency">
+                                <?php foreach($lokasi as $lk) : ?>
+                                <option value="<?= $lk['id'] ?>" <?= ($lk['id'] == $toko['regency_id']) ? 'selected' : '' ; ?>><?= $lk['name'] ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div class="form-group">
                             <label for="social_instagram">Instagram</label>
                             <input class="form-control" type="text"id="social_instagram" name="social_instagram" placeholder="Username IG">
                         </div>

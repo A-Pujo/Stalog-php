@@ -72,11 +72,47 @@
 </div>
 
 <!-- Content Row -->
-
+<?php if(in_groups('admin')) : ?>
+<!-- tabel toko -->
 <div class="row">
-    
+    <div class="col-md-12">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Tabel Data</h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>Nama Toko</th>
+                                <th>WA Toko</th>
+                                <th>WA pemilik</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>Nama Toko</th>
+                                <th>WA Toko</th>
+                                <th>WA pemilik</th>
+                            </tr>
+                        </tfoot>
+                        <tbody>
+                            <?php foreach ($tokoAktif as $p) : ?>
+                            <tr>
+                                <td><?= $p['name'] ?></td>
+                                <td><a href="https://wa.me/<?= $p['store_whatsapp'] ?>"><?= $p['store_whatsapp'] ?></a></td>
+                                <td><a href="https://wa.me/<?= $p['user_whatsapp'] ?>"><?= $p['user_whatsapp'] ?></a></td>
+                            </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-
+<?php endif; ?>
 </div>
 <!-- /.container-fluid -->
 

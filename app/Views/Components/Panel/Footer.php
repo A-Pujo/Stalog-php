@@ -60,6 +60,7 @@
     <script src="<?= base_url('assets/js/demo/chart-pie-demo.js') ?>"></script>
     <script src="<?= base_url('assets/vendor/datatables/jquery.dataTables.min.js') ?>"></script>
     <script src="<?= base_url('assets/vendor/datatables/dataTables.bootstrap4.min.js') ?>"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     
     <script>
@@ -67,7 +68,15 @@
             const customFile = document.querySelector('#customFile');
             const fileLabel = document.querySelector('.custom-file-label');
 
-            fileLabel.textContent = customFile.files[0].name;
+            if (customFile.files.length == 3) {
+                fileLabel.textContent = customFile.files[0].name+';'+customFile.files[1].name+';'+customFile.files[2].name;
+            }
+            if (customFile.files.length == 2) {
+                fileLabel.textContent = customFile.files[0].name+';'+customFile.files[1].name;
+            }
+            if (customFile.files.length == 1) {
+                fileLabel.textContent = customFile.files[0].name;
+            }
         }
 
         function convertToSlug(Text)
@@ -84,6 +93,7 @@
                 $('#slug').val(convertToSlug($('#name').val()));
             });
 
+            $('.js-example-basic-single').select2();
         });
     </script>
 </body>

@@ -50,8 +50,7 @@
                         </div>
                         <div class="form-group">
                             <label for="category">Kategori</label>
-                            <select class="custom-select" id="category" name="category">
-                                <option selected>Pilih Kategori</option>
+                            <select class="custom-select js-basic-single" id="category" name="category" style="width: 100%;">
                                 <?php foreach($category as $ct) : ?>
                                 <option value="<?= $ct['id'] ?>"><?= $ct['category'] ?></option>
                                 <?php endforeach; ?>
@@ -128,8 +127,21 @@
                             <?php foreach ($produk as $k) : ?>
                             <tr>
                                 <td><?= $k['title'] ?></td>
-                                <td><?= $k['category'] ?></td>
-                                <td><?= $k['price'] ?></td>
+                                <td>
+                                    <?php if(in_groups('store_owner')) : ?>
+                                    <select class="custom-select" id="cur_category-<?= $k['idp'] ?>" style="width: 100%;">
+                                        <?php foreach($category as $ct) : ?>
+                                        <option value="<?= $ct['id'] ?>" <?= ($k['category'] == $ct['category']) ? 'selected' : '' ?>><?= $ct['category'] ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                    <input type="hidden" id="old-cat" value="<?= $k['category_id'] ?>">
+                                    <?php else :
+                                        echo $k['category']; 
+                                        endif;    
+                                    ?>
+
+                                </td>
+                                <td><input type="text" class="form-control" id="price-<?= $k['idp'] ?>" value="<?= $k['price'] ?>" name="price" <?= (in_groups('store_owner')) ? '' : 'readonly' ?>> <input type="hidden" id="old-price" value="<?= $k['price'] ?>"></td>
                                 <td><?= ($k['in_stock'] == 1) ? 'True' : 'False' ?></td>
                                 <td><?=  ($k['is_active'] == 1) ? 'True' : 'False'  ?></td>
                                 <td><?= (in_groups('admin')) ? $k['name'] : $toko['name'] ?></td>

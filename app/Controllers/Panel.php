@@ -400,6 +400,24 @@ class Panel extends BaseController
 
 		return redirect()->to('/panel/produk');
     }
+
+    public function ajaxUpdateHelper()
+    {
+        if ($this->request->isAJAX()) {
+            $id = $this->request->getGet('idp');
+            $price = $this->request->getGet('price');
+            $curCategory = $this->request->getGet('cur_category');
+
+            if($price){
+                $this->PRODUK->where(['idp' => $id])->update(null, ['price' => $price]);
+            }
+            else{
+                $this->PRODUK->where(['idp' => $id])->update(null, ['category_id' => $curCategory]);
+            }
+            
+            return json_encode(['success'=> 'success', 'csrf' => csrf_hash(), 'idp' => $id ]);
+        }
+    }
 }
 
 ?>

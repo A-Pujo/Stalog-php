@@ -22,7 +22,7 @@
 
 </head>
 
-<body class="bg-gradient-primary">
+<body class="bg-gradient-custom">
 
     <div class="container">
 
@@ -68,7 +68,7 @@
                             
                             <hr>
                             <div class="text-center">
-                                <p><a href="<?= route_to('login') ?>"><?=lang('Auth.alreadyRegistered')?>  <?=lang('Auth.signIn')?></a></p>
+                                <p><a class="small" href="<?= route_to('login') ?>"><?=lang('Auth.alreadyRegistered')?>  <?=lang('Auth.signIn')?></a></p>
                             </div>
                         </div>
                     </div>

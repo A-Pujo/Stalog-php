@@ -93,8 +93,48 @@
                 $('#slug').val(convertToSlug($('#name').val()));
             });
 
-            $('.js-example-basic-single').select2();
+            $('.js-basic-single').select2();
+            
+            $('input[id*=price]').change(function(){
+                let helper = $(this).attr('id');
+                helper = helper.split('-');
+                if(confirm('apa anda yakin akan mengubah harga produk ini?')){    
+                    $.ajax({
+                        url: "<?= base_url() ?>/panel/ajaxUpdateHelper",
+                        headers: {'X-Requested-With': 'XMLHttpRequest'},
+                        data: {idp: helper[1], price: $(this).val()},
+                        dataType:'json',
+                        success:function(){
+                            alert('Berhasil');
+                        }
+                    });
+                    $('#old-price').val($(this).val());
+                } else {
+                    $(this).val($('#old-price').val());
+                }
+            });
+
+            $('select[id*=cur_category]').change(function(){
+                let helper = $(this).attr('id');
+                helper = helper.split('-');
+                if(confirm('apa anda yakin akan mengubah kategori produk ini?')){    
+                    $.ajax({
+                        url: "<?= base_url() ?>/panel/ajaxUpdateHelper",
+                        headers: {'X-Requested-With': 'XMLHttpRequest'},
+                        data: {idp: helper[1], cur_category: $(this).val()},
+                        dataType:'json',
+                        success:function(){
+                            alert('Berhasil');
+                        }  
+                    });
+                    $('#old-cat').val($(this).val());
+                } else {
+                    $(this).val($('#old-cat').val());
+                }
+            });
         });
+
+        
     </script>
 </body>
 

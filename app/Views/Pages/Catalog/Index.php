@@ -124,7 +124,7 @@
 <div class="container-fluid bg-white py-5">
     <div class="container">
         <h1 class="text-center">
-            Stan Catalog.
+            Lapak Stanner
         </h1>
         <p class="text-center text-muted">Tempat mencari apa yang kamu cari.</p>
 
@@ -132,7 +132,7 @@
         <?= form_open(base_url() . '/catalog/cari', ['autocomplete' => 'off', 'method' => 'get']) ?>
             <?= csrf_field() ?>
             <div class="input-group row my-4">
-                <div class="col input-group mt-2">
+                <div class="col-md input-group mt-2">
                     <select class="js-example-basic-single custom-select" id="inputGroupSelect04" name="category">
                         <option>Kategori..</option>
                         <?php foreach($kategori as $c) : ?>
@@ -140,12 +140,18 @@
                         <?php endforeach; ?>
                     </select>
                 </div>
-                <div class="col input-group mt-2">
+                <div class="col-md input-group mt-2">
                     <select class="js-example-basic-single custom-select" id="inputGroupSelect05" name="regency">
                         <option>Lokasi..</option>
                         <?php foreach($lokasi as $lk) : ?>
                         <option value="<?= $lk['id'] ?>"><?= $lk['name'] ?></option>
                         <?php endforeach; ?>
+                    </select>
+                </div>
+                <div class="col-md input-group mt-2">
+                    <select class="js-example-basic-single custom-select" id="inputGroupSelect06" name="price-filter">
+                        <option value="ASC">Harga &#8595;</option>
+                        <option value="DESC">Harga &#8593;</option>
                     </select>
                 </div>
             </div>
@@ -164,19 +170,24 @@
         <div class="row">
             <?php 
             $dmp = array();
-            foreach($produk as $k) : 
+            // fetch produk
+            foreach($produk as $k) :
+
             $k['image'] = explode(';', $k['image']);
+
+            $k['price'] = str_split(strrev($k['price']), 3);
+            $k['price'] = strrev(implode('.', $k['price']));
             // array_push($dmp, $k['image']);
             ?>
             <div class="col-lg-3 my-2">
-                <div class="card shadow-sm">
-                    <a href="<?= base_url() . '/catalog/produk/' . $k['title_hash'] ?>"><img class="card-img-top" src="<?= base_url() . '/assets/uploads/product_image/' . $k['image'][0] ?>" alt="Card image cap"></a>
+                <div class="card shadow-sm" style="height: 300px;">
+                    <a href="<?= base_url() . '/catalog/produk/' . $k['title_hash'] ?>"><img class="card-img-top" src="<?= base_url() . '/assets/uploads/product_image/' . $k['image'][0] ?>" alt="Card image cap" style="height: 200px;"></a>
                     <div class="card-body">
-                        <h5 class="card-title"><a href="<?= base_url() . '/catalog/produk/' . $k['title_hash'] ?>"><?= $k['title'] ?></a></h5>
-                        <p class="card-text"><?= (strlen($k['description']) > 30) ? substr($k['description'], 0, 30) . '..' : $k['description'] ?></p>
+                        <h6 class="card-title"><a href="<?= base_url() . '/catalog/produk/' . $k['title_hash'] ?>" style="font-size: 1rem;"><?= (strlen($k['title']) > 20) ? substr($k['title'], 0, 20) . '..' : $k['title'] ?></a></h6>
+                        <!-- <p class="card-text"><?= (strlen($k['description']) > 30) ? substr($k['description'], 0, 30) . '..' : $k['description'] ?></p> -->
                     </div>
                     <ul class="list-group list-group-flush">
-                        <li class="list-group-item">RP <?= $k['price'] ?></li>
+                        <li class="list-group-item">Rp <?= $k['price'] ?></li>
                     </ul>
                 </div>
             </div>

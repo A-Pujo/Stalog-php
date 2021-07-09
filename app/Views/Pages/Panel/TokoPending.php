@@ -39,20 +39,24 @@
                         <thead>
                             <tr>
                                 <th>Nama</th>
+                                <th>Email</th>
                                 <th>Instagram</th>
+                                <th>Tautan Lain</th>
                                 <th>WA Toko</th>
                                 <th>WA Pemilik</th>
-                                <th>Lampiran</th>
+                                <!-- <th>Lampiran</th> -->
                                 <th>Aksi</th>
                             </tr>
                         </thead>
                         <tfoot>
                             <tr>
                                 <th>Nama</th>
+                                <th>Email</th>
                                 <th>Instagram</th>
+                                <th>Tautan Lain</th>
                                 <th>WA Toko</th>
                                 <th>WA Pemilik</th>
-                                <th>Lampiran</th>
+                                <!-- <th>Lampiran</th> -->
                                 <th>Aksi</th>
                             </tr>
                         </tfoot>
@@ -60,12 +64,15 @@
                             <?php foreach ($toko as $k) : ?>
                             <tr>
                                 <td><?= $k['name'] ?></td>
-                                <td><?= $k['social_instagram'] ?></td>
+                                <td><?= $k['email'] ?></td>
+                                <td><a href="https://www.instagram.com/<?= $k['social_instagram'] ?>" class="text-link"><?= $k['social_instagram'] ?></a></td>
+                                <td><a href="<?= $k['ext_link'] ?>" class="text-link" target="_blank"><i class="fas fa-external-link-alt"></i></a></td>
                                 <td><?= $k['store_whatsapp'] ?></td>
                                 <td><?= $k['user_whatsapp'] ?></td>
-                                <td><a href="<?= base_url('assets/uploads/store_document'). '/' . $k['store_document'] ?>">Lampiran</a></td>
+                                <!-- <td><a href="<?= base_url('assets/uploads/store_document'). '/' . $k['store_document'] ?>">Lampiran</a></td> -->
                                 <td>
-                                    <a href="<?= base_url('panel/aktivasitoko/'.$k['id']) ?>" class="btn btn-success btn-circle btn-sm" onclick="return confirm('Apa anda yakin ingin mengaktifkan toko ini?')"><i class="fas fa-check"></i></a>
+                                    <a href="<?= base_url('panel/aktivasitoko/'.$k['slug']) ?>" class="btn btn-success btn-circle btn-sm" onclick="return confirm('Apa anda yakin ingin mengaktifkan toko ini?')"><i class="fas fa-check"></i></a>
+                                    <a href="<?= base_url('panel/hapustoko/'.$k['slug']) ?>" class="btn btn-danger btn-circle btn-sm" onclick="return confirm('Apa anda yakin ingin menghapus pengajuan toko ini?')"><i class="fas fa-trash"></i></a>
                                 </td>
                             </tr>
                             <?php endforeach; ?>

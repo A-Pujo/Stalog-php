@@ -2,12 +2,14 @@
 <nav class="navbar fixed-top navbar-expand navbar-light shadow" style="background-color: rgba(255, 255, 255, 0.3);">
     <a class="navbar-brand d-flex" href="<?= base_url() ?>">
         <img src="<?= base_url('assets/img/shop.png') ?>" width="30" height="30" alt="">
-        <span class="align-self-center">&nbsp;Stan Catalog</span>
+        <span class="align-self-center">&nbsp;Lapak Stanner</span>
     </a>
     <ul class="navbar-nav ml-auto">
         <?php if(logged_in() && in_groups('guests')) : ?>
         <li class="nav-item mr-3">
+            <?php if(strpos(user()->email, 'pknstan.ac.id') != false) : ?> 
             <a class="nav-link" href="<?= base_url() . '/catalog/buka' ?>">Buka Toko!</a>
+            <?php endif; ?>
         </li>
         <?php endif; ?>
         <li class="nav-item dropdown no-arrow">
@@ -31,7 +33,7 @@
                 <?php else : ?>
                 <a class="dropdown-item" href="<?= base_url('/catalog/user-login') ?>">
                     <i class="fas fa-sign-in-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                    Login
+                    Login Penjual
                 </a>
                 <?php endif; ?>
             </div>

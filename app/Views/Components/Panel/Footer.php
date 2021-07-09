@@ -85,6 +85,9 @@
         }
         
         $(document).ready(function () {
+
+            $('#dataTable-product').DataTable();
+
             $('#title').keyup(function() {
                 $('#title_hash').val($.MD5($('#title').val()));
             });
@@ -94,7 +97,28 @@
             });
 
             $('.js-basic-single').select2();
+
+            $('.js-basic-multiple').select2();
             
+            $('input[id*=title]').change(function(){
+                let helper = $(this).attr('id');
+                helper = helper.split('-');
+                if(confirm('apa anda yakin akan mengubah judul produk ini?')){    
+                    $.ajax({
+                        url: "<?= base_url() ?>/panel/ajaxUpdateHelper",
+                        headers: {'X-Requested-With': 'XMLHttpRequest'},
+                        data: {idp: helper[1], title: $(this).val()},
+                        dataType:'json',
+                        success:function(){
+                            alert('Berhasil');
+                        }
+                    });
+                    $('#old-title').val($(this).val());
+                } else {
+                    $(this).val($('#old-title').val());
+                }
+            });
+
             $('input[id*=price]').change(function(){
                 let helper = $(this).attr('id');
                 helper = helper.split('-');
@@ -132,6 +156,61 @@
                     $(this).val($('#old-cat').val());
                 }
             });
+
+            $('a[id*=desc]').click(function(){
+                <?php if(in_groups('store_owner')) : ?>
+                let helper = $(this).attr('id');
+                helper = helper.split('-');
+                $('input[name=idp-d]').val(helper['1']);
+                $('#d-modal').modal('show');
+                let old_desc = $('#old-desc-' + helper[1]).val();
+
+                $('#new-description').val(old_desc);
+
+                <?php else : ?>
+                
+                alert('Access denied!')
+
+                <?php endif; ?>
+
+            });
+
+            $('#save-update').click(function(){
+                let idp = $('input[name=idp-d]').val();
+                let newDesc = $('#new-description').val();
+
+                $.ajax({
+                    url: "<?= base_url() ?>/panel/ajaxUpdateHelper",
+                    headers: {'X-Requested-With': 'XMLHttpRequest'},
+                    data: {idp: idp, desc: newDesc},
+                    dataType:'json',
+                    success:function(){
+                        alert('Berhasil');
+                    }  
+                });
+
+                $('#old-desc-' + idp).val($('#new-description').val());
+            });
+
+            $('select[id*=cur_stock]').change(function(){
+                let helper = $(this).attr('id');
+                helper = helper.split('-');
+                if(confirm('apa anda yakin akan mengubah status produk ini?')){    
+                    $.ajax({
+                        url: "<?= base_url() ?>/panel/ajaxUpdateHelper",
+                        headers: {'X-Requested-With': 'XMLHttpRequest'},
+                        data: {idp: helper[1], in_stock: $(this).val()},
+                        dataType:'json',
+                        success:function(){
+                            alert('Berhasil');
+                        }  
+                    });
+                    $('#old-stock').val($(this).val());
+                } else {
+                    $(this).val($('#old-stock').val());
+                }
+            });
+
         });
 
         

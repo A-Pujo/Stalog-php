@@ -30,13 +30,17 @@
                             <?= csrf_field(); ?>
                             <div class="form-group">
                                 <label for="name">Nama Toko</label>
-                                <input type="text" class="form-control" id="name" placeholder="Masukkan Nama" name="name">
+                                <input type="text" class="form-control" id="name" placeholder="Masukkan Nama" name="name" required>
                             </div>
                             <div class="form-group">
                                 <label for="slug">Slug</label>
                                 <input type="text" class="form-control" id="slug" value="" name="slug" readonly>
                             </div>
                             <input type="hidden" id="user_id" name="user_id" value="<?= user()->id ?>">
+                            <div class="form-group">
+                                <label for="store_desc">Deskripsi Toko</label>
+                                <textarea type="text" class="form-control" id="store_desc" placeholder="Masukkan Deskripsi" name="store_desc" required></textarea>
+                            </div>
                             <div class="form-group">
                                 <label for="inputGroupSelect05">Lokasi</label>
                                 <select class="js-example-basic-single custom-select" id="inputGroupSelect05" name="regency">
@@ -45,32 +49,40 @@
                                     <?php endforeach; ?>
                                 </select>
                             </div>
-                            <div class="form-group">
-                                <label for="social_instagram">Instagram</label>
-                                <input type="text" class="form-control" id="social_instagram" placeholder="pknstan" name="social_instagram">
+                            <div class="form-row">
+                                <div class="form-group col-md">
+                                    <label for="social_instagram">Username Instagram</label>
+                                    <input type="text" class="form-control" id="social_instagram" placeholder="pknstan" name="social_instagram">
+                                    <small>*Opsional</small>
+                                </div>
+                                <div class="form-group col-md">
+                                    <label for="ext_link">Tautan Eksternal</label>
+                                    <input type="text" class="form-control" id="ext_link" placeholder="https://linktr.ee/blablabla" name="ext_link">
+                                    <small>*Opsional</small>
+                                </div>
                             </div>
                             <div class="form-row">
-                                <div class="col">
+                                <div class="col-md">
                                     <div class="form-group">
                                         <label for="store_whatsapp">Whatsapp Toko</label>
                                         <input type="text" class="form-control" id="store_whatsapp" placeholder="Format : 62816xxxxxxxx" name="store_whatsapp">
                                     </div>
                                 </div>
-                                <div class="col">
+                                <div class="col-md">
                                     <div class="form-group">
                                         <label for="user_whatsapp">Whatsapp Pemilik</label>
-                                        <input type="text" class="form-control" id="user_whatsapp" placeholder="Bisa disamakan." name="user_whatsapp">
+                                        <input type="text" class="form-control" id="user_whatsapp" placeholder="Bisa disamakan WA Toko." name="user_whatsapp">
                                     </div>
                                 </div>
                             </div>
                             <div class="form-row mt-2">
-                                <div class="col">
+                                <!-- <div class="col">
                                     <div class="custom-file">
                                         <input type="file" class="custom-file-input" id="customFile-1" name="store_document" onchange="filePreview_1()">
                                         <label class="custom-file-label" for="customFile-1" id="customFile-1-label">Pilih Dokumen..</label>
                                         <small class="text-muted">*Dokumen lampiran toko harus sesuai dengan <a href="#">format</a> yang telah disedikan.</small>
                                     </div>
-                                </div>
+                                </div> -->
                                 <div class="col">
                                     <div class="custom-file">
                                         <input type="file" class="custom-file-input" id="customFile-2" name="store_image" onchange="filePreview_2()">

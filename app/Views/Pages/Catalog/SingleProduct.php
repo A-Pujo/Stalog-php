@@ -39,8 +39,8 @@
                 <hr>
                 <p class="text-muted">
                     <div class="d-flex justify-content-between">
-                        <div>Oleh : <b class=""><?= $produk['name'] ?></b></div>
-                        <div> Stok : <b class="<?= ($produk['in_stock'] != 0) ? 'text-info' : 'text-warning' ?>"><?= ($produk['in_stock'] != 0) ? 'Tersedia' : 'Kosong' ?></b> </div>
+                        <div>Oleh : <b><a class="text-link" href="<?= base_url() . '/catalog/toko/' . $produk['slug'] ?>"><?= $produk['name'] ?></a></b></div>
+                        <div>Stok : <b class="<?= ($produk['in_stock'] == 'Tersedia') ? 'text-info' : 'text-warning' ?>"><?= $produk['in_stock'] ?></b> </div>
                     </div>
                     <div class="text-muted"><small><?= $lokasiToko['name']; ?></small></div>
                     <br>
@@ -50,24 +50,15 @@
                 <div class="d-flex justify-content-between">
                     <?php
                         $produk['price'] = str_split(strrev($produk['price']), 3);
-                        if(count($produk['price']) > 1) {
-                            $price = '';
-                            foreach ($produk['price'] as $p) {
-                                $price .= $p . '.';
-                            }
-                            $produk['price'] = strrev($price);
-                        } else {
-                            $produk['price'] = '.' . $produk['price'][0];
-                        }
+                        $produk['price'] = strrev(implode('.', $produk['price']));
                     ?>
-                    <div class="align-self-center">Rp<?= $produk['price'] ?></div>
+                    <div class="align-self-center">Rp <?= $produk['price'] ?></div>
                     <a href="https://wa.me/<?= $produk['store_whatsapp'] ?>?text=<?= $orderText ?>" target="_blank" class="btn btn-success"><i class="far fa-share-square"></i>&nbsp;Pesan</a>
                 </div>
                 <hr>
                 <div class="d-flex justify-content-center">
                     <a href="https://www.instagram.com/<?= $produk['social_instagram'] ?>" target="_blank" class="btn btn-danger btn-circle mx-1"><i class="fab fa-instagram"></i></a>
-                    <a href="https://wa.me/<?= $produk['store_whatsapp'] ?>" target="_blank" class="btn btn-success btn-circle mx-1"><i class="fab fa-whatsapp"></i></a>
-                    <a href="https://wa.me/<?= $produk['user_whatsapp'] ?>" target="_blank" class="btn btn-secondary btn-circle mx-1"><i class="fab fa-whatsapp"></i></a>
+                    <a href="<?= $produk['ext_link'] ?>" target="_blank" class="btn btn-warning btn-circle mx-1"><i class="fas fa-link"></i></a>
                 </div>
             </div>
         </div>
@@ -80,7 +71,7 @@
         <?= form_open(base_url() . '/catalog/cari', ['autocomplete' => 'off', 'method' => 'get', 'class' => 'mt-5']) ?>
             <?= csrf_field() ?>
             <div class="input-group row my-4">
-                <div class="col">
+                <div class="col-md input-group mt-2">
                     <select class="js-example-basic-single custom-select" id="inputGroupSelect04" name="category">
                         <option>Kategori..</option>
                         <?php foreach($kategori as $c) : ?>
@@ -88,12 +79,18 @@
                         <?php endforeach; ?>
                     </select>
                 </div>
-                <div class="col">
+                <div class="col-md input-group mt-2">
                     <select class="js-example-basic-single custom-select" id="inputGroupSelect05" name="regency">
                         <option>Lokasi..</option>
                         <?php foreach($lokasi as $lk) : ?>
                         <option value="<?= $lk['id'] ?>"><?= $lk['name'] ?></option>
                         <?php endforeach; ?>
+                    </select>
+                </div>
+                <div class="col-md input-group mt-2">
+                    <select class="js-example-basic-single custom-select" id="inputGroupSelect06" name="price-filter">
+                        <option value="ASC">Harga &#8595;</option>
+                        <option value="DESC">Harga &#8593;</option>
                     </select>
                 </div>
             </div>

@@ -39,20 +39,24 @@
                         <thead>
                             <tr>
                                 <th>Nama</th>
+                                <th>Email</th>
                                 <th>Instagram</th>
+                                <th>Tautan Lain</th>
                                 <th>WA Toko</th>
                                 <th>WA Pemilik</th>
-                                <th>Aktif</th>
+                                <th>Updated At</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
                         <tfoot>
                             <tr>
                                 <th>Nama</th>
+                                <th>Email</th>
                                 <th>Instagram</th>
+                                <th>Tautan Lain</th>
                                 <th>WA Toko</th>
                                 <th>WA Pemilik</th>
-                                <th>Aktif</th>
+                                <th>Updated At</th>
                                 <th>Aksi</th>
                             </tr>
                         </tfoot>
@@ -60,12 +64,14 @@
                             <?php foreach ($toko as $k) : ?>
                             <tr>
                                 <td><?= $k['name'] ?></td>
-                                <td><?= $k['social_instagram'] ?></td>
+                                <td><?= $k['email'] ?></td>
+                                <td><a href="https://www.instagram.com/<?= $k['social_instagram'] ?>" class="text-link" target="_blank"><?= $k['social_instagram'] ?></a></td>
+                                <td><a href="<?= $k['ext_link'] ?>" class="text-link" target="_blank"><i class="fas fa-external-link-alt"></i></a></td>
                                 <td><?= $k['store_whatsapp'] ?></td>
                                 <td><?= $k['user_whatsapp'] ?></td>
-                                <td><?= ($k['active'] == 1) ? 'True' : 'False' ?></td>
+                                <td><?= $k['supdated_at'] ?></td>
                                 <td>
-                                    <a href="<?= base_url('panel/disabletoko/'.$k['id']) ?>" class="btn btn-danger btn-circle btn-sm" onclick="return confirm('Apa anda yakin ingin menonaktifkan toko ini?')"><i class="fas fa-times"></i></a>
+                                    <a href="<?= base_url('panel/disabletoko/'.$k['slug']) ?>" class="btn btn-danger btn-circle btn-sm" onclick="return confirm('Apa anda yakin ingin menonaktifkan toko ini?')"><i class="fas fa-times"></i></a>
                                 </td>
                             </tr>
                             <?php endforeach; ?>

@@ -14,9 +14,10 @@ class Catalog extends BaseController
         $this->LOKASI = new \App\Models\M_Lokasi();
     }
 
+    // Landing, Home 
     public function index()
     {
-        $produk = $this->PRODUK->join('store', 'store.id = products.store_id')->join('product_category', 'product_category.id = products.category_id')->where(['is_active' => 1, 'active' => 1,]);
+        $produk = $this->PRODUK->join('store', 'store.id = products.store_id')->join('product_category', 'product_category.id = products.category_id')->where(['is_active' => 1, 'active' => 1,])->orderBy('idp', 'DESC');
         $data = [
             'title' => 'Beranda',
             'produk' => $produk->paginate(12),
@@ -37,10 +38,12 @@ class Catalog extends BaseController
         return redirect()->to(base_url());
     }
 
+    // Search
     public function cari($category = 'Kategori..', $lokasi = 'Lokasi..', $search = null)
     {
         // dd($this->request->getGet());
-        $produk = $this->PRODUK->join('store', 'store.id = products.store_id')->where(['is_active' => 1, 'active' => 1,]);
+        $price_filter = ($this->request->getVar('price-filter')) ? $this->request->getVar('price-filter') : 'ASC';
+        $produk = $this->PRODUK->join('store', 'store.id = products.store_id')->where(['is_active' => 1, 'active' => 1,])->orderBy('price', $price_filter);
 
         $category = ($this->request->getVar('category')) ? $this->request->getVar('category') : $category;
         $lokasi = ($this->request->getVar('regency')) ? $this->request->getVar('regency') : $category;
@@ -74,6 +77,10 @@ class Catalog extends BaseController
             $prd = $produk->like(['regency_id' => $lokasi]);
         }
 
+        else if(! empty($price_filter)){
+            $prd = $produk;
+        }
+
         else{
             return redirect()->to(base_url());
         }
@@ -92,21 +99,25 @@ class Catalog extends BaseController
         echo view('Components/Catalog/Footer', $data);
     }
 
+    // Single Product
     public function produk($title_hash = null)
     {
         $produk = $this->PRODUK->join('store', 'store.id = products.store_id')->join('product_category', 'product_category.id = products.category_id')->where(['title_hash' => $title_hash, 'is_active' => 1, 'active' => 1])->first();
+
         $data = [
             'title' => 'Barang',
             'produk' => $produk,
             'kategori' => $this->CATEGORY->findAll(),
             'lokasi' => $this->LOKASI->findAll(),
-            'lokasiToko' => $this->LOKASI->where(['id' => $produk['regency_id']])->first(),
         ];
 
-        if($produk != null) {
+        if(! empty($produk)) {
             $orderText = 'Permisi saya ingin memesan barang ' . $produk['title'] . ' di laman Stan Catalog dengan tautan ' . base_url() . '/catalog/produk/' . $produk['title_hash'] . ' Apakah masih tersedia?';
             $orderText = urlencode($orderText);
             $data['orderText'] = $orderText;
+            $data['lokasiToko'] = $this->LOKASI->where(['id' => $produk['regency_id']])->first();
+            $viewCounter = $produk['view_counter'] + 1;
+            $this->PRODUK->where(['title_hash' => $title_hash, 'is_active' => 1,])->update(null, ['view_counter' => (int)$viewCounter,]);
         }
 
         echo view('Components/Catalog/Header', $data);
@@ -115,10 +126,49 @@ class Catalog extends BaseController
         echo view('Components/Catalog/Footer', $data);
     }
 
+    // Store Page
+    public function toko($slug = null)
+    {
+        $toko = $this->TOKO->where(['slug' => $slug, 'active' => 1])->first();
+        
+        if(! empty($toko)) {
+            $produk = $this->PRODUK->where(['store_id' => $toko['id']]);
+        
+            $data = [
+                'title' => $toko['name'],
+                'toko' => $toko,
+                'produk' => $produk->paginate(12),
+                'pager' => $produk->pager,
+                'lokasiToko' => $this->LOKASI->where(['id' => $toko['regency_id']])->first(),
+                'kategori' => $this->CATEGORY->findAll(),
+                'lokasi' => $this->LOKASI->findAll(),
+            ];
+
+        }
+        else{
+            $data = [
+                'kategori' => $this->CATEGORY->findAll(),
+                'lokasi' => $this->LOKASI->findAll(),
+                'title' => 'Tidak Diketahui',
+            ];  
+        }
+
+        // dd($toko);
+
+        echo view('Components/Catalog/Header', $data);
+        echo view('Components/Catalog/Navbar', $data);
+        echo view('Pages/Catalog/Toko', $data);
+        echo view('Components/Catalog/Footer', $data);
+    }
+
     public function buka()
     {
         if (! logged_in()) {
             return redirect()->to(base_url().'/catalog/user-login');
+        }
+
+        if (!is_int(strpos(user()->email, 'pknstan.ac.id'))){
+            return redirect()->to(base_url());
         }
 
         $data = [
@@ -154,25 +204,27 @@ class Catalog extends BaseController
                 ],
             ],
             'store_whatsapp' => [
-                'rules' => 'required',
+                'rules' => 'required|alpha_numeric',
                 'errors' => [
-                    'required' => 'WA toko harus diisi.'
+                    'required' => 'WA toko harus diisi.',
+                    'alpha_numeric' => 'WA toko tidak boleh menganduk simbo (e.g. +/-;|)',
                 ],
             ],
             'user_whatsapp' => [
-                'rules' => 'required',
+                'rules' => 'required|alpha_numeric',
                 'errors' => [
-                    'required' => 'WA pemilik harus diisi.'
+                    'required' => 'WA pemilik harus diisi.',
+                    'alpha_numeric' => 'WA pemilik tidak boleh menganduk simbo (e.g. +/-;|)',
                 ],
             ],
-            'store_document' => [
-				'rules' => 'uploaded[store_document]|max_size[store_document, 5000]|ext_in[store_document,docx,doc,pdf]',
-				'errors' => [
-					'uploaded' => 'Dokumen lampiran tidak dipilih.',
-					'max_size' => 'Ukuran dokumen terlalu besar.',
-					'ext_in' => 'Format dokumen tidak sesuai.',
-				],
-			],
+            // 'store_document' => [
+			// 	'rules' => 'uploaded[store_document]|max_size[store_document, 5000]|ext_in[store_document,docx,doc,pdf]',
+			// 	'errors' => [
+			// 		'uploaded' => 'Dokumen lampiran tidak dipilih.',
+			// 		'max_size' => 'Ukuran dokumen terlalu besar.',
+			// 		'ext_in' => 'Format dokumen tidak sesuai.',
+			// 	],
+			// ],
 			'store_image' => [
 				'rules' => 'max_size[store_image,3000]|ext_in[store_image,jpg,png,jpeg]',
 				'errors' => [
@@ -186,9 +238,9 @@ class Catalog extends BaseController
 		}
 
 		// Upload file document
-		$file_doc = $this->request->getFile('store_document');
-		$fileName_doc = $file_doc->getRandomName();
-		$file_doc->move('assets/uploads/store_document/', $fileName_doc);
+		// $file_doc = $this->request->getFile('store_document');
+		// $fileName_doc = $file_doc->getRandomName();
+		// $file_doc->move('assets/uploads/store_document/', $fileName_doc);
 
         // upload file gambar
         $file_img = $this->request->getFile('store_image');
@@ -199,15 +251,18 @@ class Catalog extends BaseController
 			'name' => $this->request->getVar('name'),
             'slug' => $this->request->getVar('slug'),
             'user_id' => user()->id,
+            'store_desc' => $this->request->getVar('store_desc'),
             'regency_id' => $this->request->getVar('regency'),
             'social_instagram' => $this->request->getVar('social_instagram'),
+            'ext_link' => $this->request->getVar('ext_link'),
             'store_whatsapp' => $this->request->getVar('store_whatsapp'),
             'user_whatsapp' => $this->request->getVar('user_whatsapp'),
-            'store_document' => $fileName_doc,
+            // 'store_document' => $fileName_doc,
+            'store_document' => '',
 			'store_image' => $fileName_img,
 		]);
 		
-		$this->session->setFlashdata('pesan', 'Formulirmu berhasil dikirim.');
+		$this->session->setFlashdata('pesan', 'Formulirmu berhasil dikirim. Silahkan cek email konfirmasi dari Lapak Stanner secara berkala dalam 3 x 34 jam.');
 
 		return redirect()->to('/catalog')->withInput();
     }

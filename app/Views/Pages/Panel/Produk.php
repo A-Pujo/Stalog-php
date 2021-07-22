@@ -63,7 +63,7 @@
                         <div class="custom-file mb-3">
                             <input type="file" class="custom-file-input" id="customFile" name="customFile[]" onchange="filePreview()" multiple>
                             <label class="custom-file-label" for="customFile">Pilih gambar</label>
-                            <small>*Maksimal 3 gambar dengan ukuran maksimal 3mb per gambar. Pilih lebih dari satu gambar saat mengunggah.</small>
+                            <small>*Maksimal 3 gambar dengan ukuran maksimal 3mb per gambar. Dapat memilih lebih dari satu gambar saat mengunggah.</small>
                         </div>
                         <div class="form-group">
                             <label for="harga">Harga</label>
@@ -177,6 +177,7 @@
                                     <a href="<?= base_url('panel/disableproduk/'.$k['idp']) ?>" class="btn btn-danger btn-circle btn-sm" onclick="return confirm('Apa anda yakin ingin menonaktifkan produk ini?')"><i class="fas fa-times"></i></a>
                                     <?php else: ?>
                                     <a href="<?= base_url('panel/enableproduk/'.$k['idp']) ?>" class="btn btn-success btn-circle btn-sm" onclick="return confirm('Apa anda yakin ingin mengaktifkan produk ini?')"><i class="fas fa-check"></i></a>
+                                    <a href="<?= base_url('panel/hapusproduk/'.$k['idp']) ?>" class="btn btn-warning btn-circle btn-sm" onclick="return confirm('Apa anda yakin ingin menghapus produk ini?')"><i class="far fa-trash-alt"></i></a>
                                     <?php endif; ?>
                                 </td>
                                 <td><?= $k['view_counter'] ?>x</td>

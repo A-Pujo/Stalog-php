@@ -100,7 +100,7 @@
 
             $('.js-basic-multiple').select2();
             
-            $('input[id*=title]').change(function(){
+            $('input[id*=title-]').change(function(){
                 let helper = $(this).attr('id');
                 helper = helper.split('-');
                 if(confirm('apa anda yakin akan mengubah judul produk ini?')){    

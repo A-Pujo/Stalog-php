@@ -2,7 +2,7 @@
 <nav class="navbar fixed-top navbar-expand navbar-light shadow" style="background-color: rgba(255, 255, 255, 0.3);">
     <a class="navbar-brand d-flex" href="<?= base_url() ?>">
         <img src="<?= base_url('assets/img/shop.png') ?>" width="30" height="30" alt="">
-        <span class="align-self-center">&nbsp;Lapak Stanner</span>
+        <span class="align-self-center">&nbsp;Lapak Staner</span>
     </a>
     <ul class="navbar-nav ml-auto">
         <?php if(logged_in() && in_groups('guests')) : ?>

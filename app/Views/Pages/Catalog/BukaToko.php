@@ -87,7 +87,7 @@
                                     <div class="custom-file">
                                         <input type="file" class="custom-file-input" id="customFile-2" name="store_image" onchange="filePreview_2()">
                                         <label class="custom-file-label" for="customFile-2" id="customFile-2-label">Pilih Gambar..</label>
-                                        <small class="text-muted">*Gambar digunakan sebagai foto profil toko.</small>
+                                        <small class="text-muted">*Gambar dengan ukuran maksimal 3mb dan format jpg, png, dan jpeg digunakan sebagai foto profil toko .</small>
                                     </div>
                                 </div>
                             </div>

@@ -2,14 +2,14 @@
         <hr>
         <div class="container py-2">
             <div class="row">
-                <div class="col">
+                <div class="col mb-3">
                     <b>Kritik dan Saran</b><br>
-                    <a href="https://mail.google.com/mail/u/0/?view=cm&fs=1&tf=1&to=" class="text-gray-500"><i class="fas fa-at"></i>&nbsp; email</a><br>
-                    <a href="https://www.instagram.com/bebeb_aw/" class="text-gray-500"><i class="fab fa-instagram"></i>&nbsp; ig</a>
+                    <a href="https://mail.google.com/mail/u/0/?view=cm&fs=1&tf=1&to=ekraf.bempknstan@gmail.com" class="text-gray-500" target="_blank"><i class="fas fa-at"></i>&nbsp; ekraf.bempknstan@gmail.com</a><br>
+                    <!--<a href="https://www.instagram.com/bebeb_aw/" class="text-gray-500" target="_blank"><i class="fab fa-instagram"></i>&nbsp; ig</a>-->
                 </div>
-                <div class="col">
-                    <b>Staco</b><br>
-                    asdas deskripsinya ini
+                <div class="col mb-3">
+                    <b>Lapak Staner - Jual Beli Jadi Mudah</b><br>
+                    <p>Lapak Staner adalah platform pertama di PKN STAN yang berfungsi untuk menghubungkan antara penjual dan pembeli secara daring tanpa biaya apapun. Bergabunglah dengan mulai mendaftarkan produk jualan dan berbelanja kapan saja, di mana saja.</p>
                 </div>
             </div>
         </div>
@@ -46,13 +46,15 @@
         {
             return Text.toLowerCase().replace(/ /g,'-').replace(/[^\w-]+/g,'');
         }
-
-        $(window).on('load', function(){
-            // Animate loader off screen
-            $(".se-pre-con").fadeOut("slow");;
-        });
+        
+        // $(window).on('load', function(){
+        //     // Animate loader off screen
+        //     $(".se-pre-con").fadeOut("slow");;
+        // });
         
         $(document).ready(function () {
+            $('#modal-opening').modal('show');
+            
             $('#title').keyup(function() {
                 $('#title_hash').val($.MD5($('#title').val()));
             });

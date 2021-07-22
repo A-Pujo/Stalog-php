@@ -104,7 +104,7 @@
 <div class="container-fluid bg-white py-5">
     <div class="container">
         <h1 class="text-center">
-            Lapak Stanner
+            Lapak Staner
         </h1>
         <p class="text-center text-muted">Tempat mencari apa yang kamu cari.</p>
 
@@ -138,7 +138,7 @@
             <div class="input-group my-4">
                 <input type="text" class="form-control" placeholder="Cari di sini." name="search">
                 <div class="input-group-append">
-                    <button class="btn btn-outline-secondary" type="submit" id="button-addon1"><i class="fas fa-search"></i></button>
+                    <button class="btn btn-info" type="submit" id="button-addon1"><i class="fas fa-search"></i></button>
                 </div>
             </div>
         </form>

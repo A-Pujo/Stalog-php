@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Register - Lapak Stanner</title>
+    <title>Register - Lapak Staner</title>
 
     <!-- Custom fonts for this template-->
     <link href="<?= base_url() ?>/assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -45,7 +45,7 @@
                                 <div class="form-group">
                                     <input type="email" class="form-control form-control-user <?php if(session('errors.email')) : ?>is-invalid<?php endif ?>" name="email"
                                         placeholder="<?=lang('Auth.email')?>" value="<?= old('email') ?>">
-                                    <small id="emailHelp" class="form-text text-muted"><?=lang('Auth.weNeverShare')?></small>
+                                    <small id="emailHelp" class="form-text text-muted">Gunakan email@pknstan.ac.id untuk mendapat kesempatan membuka toko.</small>
                                 </div>
 
                                 <div class="form-group">
@@ -56,11 +56,11 @@
                                 <div class="form-group row">
                                     <div class="col-sm-6 mb-3 mb-sm-0">
                                         <input type="password" class="form-control form-control-user <?php if(session('errors.password')) : ?>is-invalid<?php endif ?>"
-                                            name="password" placeholder="<?=lang('Auth.password')?>" autocomplete="off">
+                                            name="password" placeholder="<?=lang('Auth.password')?>" autocomplete="off" minlength="8">
                                     </div>
                                     <div class="col-sm-6">
                                         <input type="password" class="form-control form-control-user <?php if(session('errors.pass_confirm')) : ?>is-invalid<?php endif ?>"
-                                        name="pass_confirm" placeholder="<?=lang('Auth.repeatPassword')?>" autocomplete="off">
+                                        name="pass_confirm" placeholder="<?=lang('Auth.repeatPassword')?>" autocomplete="off" minlength="8">
                                     </div>
                                 </div>
                                 <button type="submit" class="btn btn-primary btn-user btn-block"><?=lang('Auth.register')?></button>

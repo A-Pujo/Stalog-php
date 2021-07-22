@@ -35,7 +35,7 @@
             </div>
             <div class="col-sm col-lg-4 pt-2">
                 <h2> <?= $produk['title'] ?></h2> 
-                <a href="<?= base_url() . '/catalog/cari/' . $produk['category_id'] ?>" class="btn btn-sm btn-info"><?= $produk['category'] ?></a>
+                <a href="<?= base_url() . '/catalog/cari?category=' . $produk['category_id'] ?>" class="btn btn-sm btn-info"><?= $produk['category'] ?></a>
                 <hr>
                 <p class="text-muted">
                     <div class="d-flex justify-content-between">
@@ -58,7 +58,9 @@
                 <hr>
                 <div class="d-flex justify-content-center">
                     <a href="https://www.instagram.com/<?= $produk['social_instagram'] ?>" target="_blank" class="btn btn-danger btn-circle mx-1"><i class="fab fa-instagram"></i></a>
+                    <?php if(! empty($produk['ext_link']) and $produk['ext_link'] != null) : ?>
                     <a href="<?= $produk['ext_link'] ?>" target="_blank" class="btn btn-warning btn-circle mx-1"><i class="fas fa-link"></i></a>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -97,7 +99,7 @@
             <div class="input-group my-4">
                 <input type="text" class="form-control" placeholder="Cari di sini." name="search">
                 <div class="input-group-append">
-                    <button class="btn btn-outline-secondary" type="submit" id="button-addon1"><i class="fas fa-search"></i></button>
+                    <button class="btn btn-info" type="submit" id="button-addon1"><i class="fas fa-search"></i></button>
                 </div>
             </div>
         </form>

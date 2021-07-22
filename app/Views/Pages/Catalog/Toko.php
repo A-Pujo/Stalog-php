@@ -23,7 +23,9 @@
                 <hr>
                 <div class="d-flex justify-content-center">
                     <a href="https://www.instagram.com/<?= $toko['social_instagram'] ?>" target="_blank" class="btn btn-danger btn-circle mx-1"><i class="fab fa-instagram"></i></a>
+                    <?php if(! empty($produk['ext_link']) and $produk['ext_link'] != null) : ?>
                     <a href="<?= $toko['ext_link'] ?>" target="_blank" class="btn btn-warning btn-circle mx-1"><i class="fas fa-link"></i></a>
+                    <?php endif; ?>
                 </div>
                 <hr>
                 <div class="row">

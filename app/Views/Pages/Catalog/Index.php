@@ -124,7 +124,7 @@
 <div class="container-fluid bg-white py-5">
     <div class="container">
         <h1 class="text-center">
-            Lapak Stanner
+            Lapak Staner
         </h1>
         <p class="text-center text-muted">Tempat mencari apa yang kamu cari.</p>
 
@@ -158,7 +158,7 @@
             <div class="input-group my-4">
                 <input type="text" class="form-control" placeholder="Cari di sini." name="search">
                 <div class="input-group-append">
-                    <button class="btn btn-outline-secondary" type="submit" id="button-addon1"><i class="fas fa-search"></i></button>
+                    <button class="btn btn-info" type="submit" id="button-addon1"><i class="fas fa-search"></i></button>
                 </div>
             </div>
         </form>
@@ -208,5 +208,28 @@
     <?php else : ?>
     <?= $pager->links() ?>
     <?php endif; ?>
+    
+    <div class="modal hide fade" id="modal-opening" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="false">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Halo!</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body p-4 text-center">
+            <p>Tes nich.</p>
+            <div class="h_iframe">
+                <img class="ratio" src="http://placehold.it/16x9"/>
+                <iframe width="640" height="360" type="text/html" 
+                    src="https://www.youtube.com/embed/Tt93EZWfVKk">
+                </iframe> 
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
+    
 </div>

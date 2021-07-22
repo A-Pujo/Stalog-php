@@ -433,7 +433,7 @@ class Panel extends BaseController
             return redirect()->to(base_url());
         }
         
-        $toko = $this->TOKO->join('users', 'users.id = store.users_id')->where(['slug' => $slug, 'active' => 0])->first();
+        $toko = $this->TOKO->join('users', 'users.id = store.user_id')->where(['slug' => $slug, 'store.active' => 0,])->first();
 
         if(! empty($toko)){
 
@@ -468,6 +468,48 @@ class Panel extends BaseController
 		return redirect()->to('/panel/produk');
     }
 
+    public function enableproduk($id)
+    {
+        if (in_groups('guests')) {
+            return redirect()->to(base_url());
+        }
+        
+        $this->PRODUK->where(['idp' => $id])->update(null, ['is_active' => 1,]);
+
+        $this->session->setFlashdata('pesan', 'Produk berhasil diaktifkan.');
+
+        return redirect()->to('/panel/produk');
+    }
+
+    public function hapusproduk($id)
+    {
+        if (in_groups('guests')) {
+            return redirect()->to(base_url());
+        }
+        
+        $dataRow = $this->PRODUK->join('store', 'store.id = products.store_id')->join('users', 'users.id = store.user_id')->where(['users.id' => user()->id ,'idp' => $id, 'is_active' => 0])->first();
+
+        if(empty($dataRow)){
+            $this->session->setFlashdata('errors', 'Produk yang kamu maksud tidak ditemukan.');
+
+            return redirect()->to('/panel/produk');   
+        } else {
+            $images = explode(';', $dataRow['image']);
+            array_pop($images);
+            // dd($images);
+
+            foreach ($images as $img) {
+                unlink('assets/uploads/product_image/' . $img);
+            }
+
+            $this->PRODUK->where(['idp' => $id, 'is_active' => 0])->delete();
+
+            $this->session->setFlashdata('pesan', 'Produk ' . $dataRow['title'] . ' berhasil dihapus.');
+
+            return redirect()->to('/panel/produk');   
+        }
+    }
+
     // public function emptyproduk($id)
     // {
     //     if (in_groups('guests')) {
@@ -480,19 +522,6 @@ class Panel extends BaseController
 
 	// 	return redirect()->to('/panel/produk');
     // }
-
-    public function enableproduk($id)
-    {
-        if (in_groups('guests')) {
-            return redirect()->to(base_url());
-        }
-        
-        $this->PRODUK->where(['idp' => $id])->update(null, ['is_active' => 1,]);
-
-        $this->session->setFlashdata('pesan', 'Produk berhasil diaktifkan.');
-
-		return redirect()->to('/panel/produk');
-    }
 
     // public function repopulateproduk($id)
     // {

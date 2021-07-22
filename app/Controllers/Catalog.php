@@ -46,27 +46,29 @@ class Catalog extends BaseController
         $produk = $this->PRODUK->join('store', 'store.id = products.store_id')->where(['is_active' => 1, 'active' => 1,])->orderBy('price', $price_filter);
 
         $category = ($this->request->getVar('category')) ? $this->request->getVar('category') : $category;
-        $lokasi = ($this->request->getVar('regency')) ? $this->request->getVar('regency') : $category;
+        $lokasi = ($this->request->getVar('regency')) ? $this->request->getVar('regency') : $lokasi;
         $search = ($this->request->getVar('search')) ? $this->request->getVar('search') : $search;
 
+        // dd([$category, $lokasi, $search]);
+
         if($category != 'Kategori..' && $lokasi != 'Lokasi..' && $search != null) {
-            $prd = $produk->like(['title' => $search, 'category_id' => $category, 'regency_id' => $lokasi]);
+            $prd = $produk->like(['title' => $search,])->where(['category_id' => $category, 'regency_id' => $lokasi]);
         }
 
         else if ($category != 'Kategori..' && $search != null){
-            $prd = $produk->like(['title' => $search, 'category_id' => $category]);
+            $prd = $produk->like(['title' => $search,])->where(['category_id' => $category,]);
         }
 
         else if ($category != 'Kategori..' && $lokasi != 'Lokasi..'){
-            $prd = $produk->like(['category_id' => $category, 'regency_id' => $lokasi]);
+            $prd = $produk->like(['category_id' => $category,])->where(['regency_id' => $lokasi]);
         }
 
         else if ($search != null && $lokasi != 'Lokasi..'){
-            $prd = $produk->like(['title' => $search, 'regency_id' => $lokasi]);
+            $prd = $produk->like(['title' => $search,])->where(['regency_id' => $lokasi]);
         }
 
         else if ($category != 'Kategori..'){
-            $prd = $produk->like(['category_id' => $category]);
+            $prd = $produk->where(['category_id' => $category]);
         }
 
         else if ($search != null) {
@@ -74,7 +76,7 @@ class Catalog extends BaseController
         }
 
         else if ($lokasi != 'Lokasi..'){
-            $prd = $produk->like(['regency_id' => $lokasi]);
+            $prd = $produk->where(['regency_id' => $lokasi]);
         }
 
         else if(! empty($price_filter)){
@@ -112,7 +114,7 @@ class Catalog extends BaseController
         ];
 
         if(! empty($produk)) {
-            $orderText = 'Permisi saya ingin memesan barang ' . $produk['title'] . ' di laman Stan Catalog dengan tautan ' . base_url() . '/catalog/produk/' . $produk['title_hash'] . ' Apakah masih tersedia?';
+            $orderText = 'Permisi saya ingin memesan barang ' . $produk['title'] . ' di laman Lapak Staner dengan tautan ' . base_url() . '/catalog/produk/' . $produk['title_hash'] . ' Apakah masih tersedia?';
             $orderText = urlencode($orderText);
             $data['orderText'] = $orderText;
             $data['lokasiToko'] = $this->LOKASI->where(['id' => $produk['regency_id']])->first();
@@ -243,9 +245,13 @@ class Catalog extends BaseController
 		// $file_doc->move('assets/uploads/store_document/', $fileName_doc);
 
         // upload file gambar
-        $file_img = $this->request->getFile('store_image');
-		$fileName_img = $file_img->getRandomName();
-		$file_img->move('assets/uploads/store_image/', $fileName_img);
+        if($this->request->getFile('store_image')->isValid()){
+            $file_img = $this->request->getFile('store_image');
+    		$fileName_img = $file_img->getRandomName();
+    		$file_img->move('assets/uploads/store_image/', $fileName_img);
+        } else {
+            $fileName_img = 'default.png';
+        }
 
 		$this->TOKO->save([
 			'name' => $this->request->getVar('name'),
@@ -262,7 +268,7 @@ class Catalog extends BaseController
 			'store_image' => $fileName_img,
 		]);
 		
-		$this->session->setFlashdata('pesan', 'Formulirmu berhasil dikirim. Silahkan cek email konfirmasi dari Lapak Stanner secara berkala dalam 3 x 34 jam.');
+		$this->session->setFlashdata('pesan', 'Formulirmu berhasil dikirim. Silahkan cek email konfirmasi dari Lapak Staner secara berkala dalam 3 x 24 jam.');
 
 		return redirect()->to('/catalog')->withInput();
     }

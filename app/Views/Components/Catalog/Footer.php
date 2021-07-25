@@ -42,19 +42,20 @@
             fileLabel_2.textContent = customFile_2.files[0].name;
         }
 
-        function convertToSlug(Text)
-        {
-            return Text.toLowerCase().replace(/ /g,'-').replace(/[^\w-]+/g,'');
+        function convertToSlug(Text) {
+            return Text.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
         }
-        
+
+        CKEDITOR.replace('store_desc');
+
         // $(window).on('load', function(){
         //     // Animate loader off screen
         //     $(".se-pre-con").fadeOut("slow");;
         // });
-        
-        $(document).ready(function () {
+
+        $(document).ready(function() {
             $('#modal-opening').modal('show');
-            
+
             $('#title').keyup(function() {
                 $('#title_hash').val($.MD5($('#title').val()));
             });
@@ -67,5 +68,6 @@
             $('.js-example-basic-single').select2();
         });
     </script>
-</body>
-</html>
+    </body>
+
+    </html>

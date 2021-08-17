@@ -1,3 +1,21 @@
+<style>
+    .iframe-container {
+      overflow: hidden;
+      /* 16:9 aspect ratio */
+      padding-top: 56.25%;
+      position: relative;
+    }
+    
+    .iframe-container iframe {
+       border: 0;
+       height: 100%;
+       left: 0;
+       position: absolute;
+       top: 0;
+       width: 100%;
+    }
+    
+</style>
 <div class="container-fluid bg-white py-5">
     <?php if(empty($produk)) : ?>
     <div class="row py-5">
@@ -23,11 +41,11 @@
                         </div>
                         <?php $it++; endforeach; ?>
                     </div>
-                    <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+                    <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev" style="background: rgb(72,133,54);background: linear-gradient(270deg, rgba(72,133,54,0) 0%, rgba(111,158,175,1) 90%);">
                         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                         <span class="sr-only">Previous</span>
                     </a>
-                    <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+                    <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next" style="background: rgb(72,133,54);background: linear-gradient(90deg, rgba(72,133,54,0) 0%, rgba(111,158,175,1) 90%);">
                         <span class="carousel-control-next-icon" aria-hidden="true"></span>
                         <span class="sr-only">Next</span>
                     </a>
@@ -39,12 +57,12 @@
                 <hr>
                 <p class="text-muted">
                     <div class="d-flex justify-content-between">
-                        <div>Oleh : <b><a class="text-link" href="<?= base_url() . '/catalog/toko/' . $produk['slug'] ?>"><?= $produk['name'] ?></a></b></div>
+                        <div>Toko : <b><a class="text-link" href="<?= base_url() . '/catalog/toko/' . $produk['slug'] ?>"><?= $produk['name'] ?></a></b></div>
                         <div>Stok : <b class="<?= ($produk['in_stock'] == 'Tersedia') ? 'text-info' : 'text-warning' ?>"><?= $produk['in_stock'] ?></b> </div>
                     </div>
                     <div class="text-muted"><small><?= $lokasiToko['name']; ?></small></div>
                     <br>
-                    <?= $produk['description'] ?>
+                    <?= html_entity_decode($produk['description']) ?>
                 </p>
                 <hr>
                 <div class="d-flex justify-content-between">

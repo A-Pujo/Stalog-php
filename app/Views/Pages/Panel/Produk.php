@@ -63,7 +63,7 @@
                         <div class="custom-file mb-3">
                             <input type="file" class="custom-file-input" id="customFile" name="customFile[]" onchange="filePreview()" multiple>
                             <label class="custom-file-label" for="customFile">Pilih gambar</label>
-                            <small>*Maksimal 3 gambar dengan ukuran maksimal 3mb per gambar. Dapat memilih lebih dari satu gambar saat mengunggah.</small>
+                            <small style="color: #e65247">*Maksimal 3 gambar dengan ukuran maksimal 300kb per gambar. Dapat memilih lebih dari satu gambar dalam 1x unggah.</small>
                         </div>
                         <div class="form-group">
                             <label for="harga">Harga</label>
@@ -108,7 +108,7 @@
                                 <th>Judul</th>
                                 <th>Kategori</th>
                                 <th>Harga</th>
-                                <?= (in_groups('store_owner') || in_groups('admin')) ? '<th>Deskr.</th>' : '' ?>
+                                <?= (in_groups('store_owner') || in_groups('admin')) ? '<th>Edit</th>' : '' ?>
                                 <th>Stok</th>
                                 <th>Aktif</th>
                                 <th>Dilihat</th>
@@ -120,7 +120,7 @@
                                 <th>Judul</th>
                                 <th>Kategori</th>
                                 <th>Harga</th>
-                                <?= (in_groups('store_owner') || in_groups('admin')) ? '<th>Deskr.</th>' : '' ?>
+                                <?= (in_groups('store_owner') || in_groups('admin')) ? '<th>Edit</th>' : '' ?>
                                 <th>Stok</th>
                                 <th>Aktif</th>
                                 <th>Dilihat</th>
@@ -130,48 +130,13 @@
                         <tbody>
                             <?php foreach ($produk as $k) : ?>
                             <tr>
-                                <td><input type="text" class="form-control" id="title-<?= $k['idp'] ?>" value="<?= $k['title'] ?>" name="title" <?= (in_groups('store_owner')) ? '' : 'readonly' ?>> <input type="hidden" id="old-title" value="<?= $k['title'] ?>"></td>
+                                <td id="colTitle-<?= $k['idp'] ?>"><?= $k['title'] ?></td>
+                                <td id="colCat-<?= $k['idp'] ?>"><?= $k['category'] ?></td>
+                                <td id="colPrc-<?= $k['idp'] ?>"><?= $k['price'] ?></td>
                                 <td>
-                                    <?php if(in_groups('store_owner')) : ?>
-                                    <select class="custom-select" id="cur_category-<?= $k['idp'] ?>" style="width: 100%;">
-                                        <?php foreach($category as $ct) : ?>
-                                        <option value="<?= $ct['id'] ?>" <?= ($k['category'] == $ct['category']) ? 'selected' : '' ?>><?= $ct['category'] ?></option>
-                                        <?php endforeach; ?>
-                                    </select>
-                                    <input type="hidden" id="old-cat" value="<?= $k['category_id'] ?>">
-                                    <?php else :
-                                        echo $k['category']; 
-                                        endif;    
-                                    ?>
-
+                                    <button href="#" class="btn btn-warning btn-circle btn-sm" data-toggle="modal" data-target="#d-modal-<?= $k['idp'] ?>"><i class="far fa-edit"></i></button>
                                 </td>
-                                <td><input type="text" class="form-control" id="price-<?= $k['idp'] ?>" value="<?= $k['price'] ?>" name="price" <?= (in_groups('store_owner')) ? '' : 'readonly' ?>> <input type="hidden" id="old-price" value="<?= $k['price'] ?>"></td>
-                                <td>
-                                    <a href="#" id="desc-<?= $k['idp'] ?>" class="btn btn-warning btn-circle btn-sm"><i class="far fa-edit"></i></a> <input type="hidden" id="old-desc-<?= $k['idp'] ?>" value="<?= $k['description'] ?>">
-                                </td>
-                                <!-- <td><?= ($k['in_stock'] == 1) ? 'True' : 'False' ?></td> -->
-                                <!-- <td>
-                                    <?php if($k['in_stock'] == 1) : ?>
-                                    <a href="<?= base_url('panel/emptyproduk/'.$k['idp']) ?>" class="btn btn-danger btn-circle btn-sm" onclick="return confirm('Apa produk ini benar-benar out of stock?')"><i class="fas fa-box-open"></i></a>
-                                    <?php else: ?>
-                                    <a href="<?= base_url('panel/repopulateproduk/'.$k['idp']) ?>" class="btn btn-success btn-circle btn-sm" onclick="return confirm('Apa produk ini benar-benar sudah tersedia?')"><i class="fab fa-stack-overflow"></i></a>
-                                    <?php endif; ?>
-                                </td> -->
-                                <td>
-                                    <?php if(in_groups('store_owner')) : ?>
-                                    <div class="form-group">
-                                        <select class="form-control" id="cur_stock-<?= $k['idp'] ?>" name="in_stock">
-                                            <?php $listSt = array('Kosong', 'Pre-Order', 'Tersedia'); foreach($listSt as $cST) : ?>
-                                            <option value="<?= $cST ?>" <?= ($k['in_stock'] == $cST) ? 'selected' : '' ?>> <?= $cST ?></option>
-                                            <?php endforeach ?>
-                                        </select>
-                                    </div>
-                                    <input type="hidden" id="old-stock" value="<?= $k['in_stock'] ?>">
-                                    <?php else : ?>
-                                    <?= $k['in_stock'] ?>
-                                    <?php endif; ?>
-                                </td>
-                                <!-- <td><?=  ($k['is_active'] == 1) ? 'True' : 'False'  ?></td> -->
+                                <td id="colStk-<?= $k['idp'] ?>"><?= $k['in_stock'] ?></td>
                                 <td>
                                     <?php if($k['is_active'] == 1) : ?>
                                     <a href="<?= base_url('panel/disableproduk/'.$k['idp']) ?>" class="btn btn-danger btn-circle btn-sm" onclick="return confirm('Apa anda yakin ingin menonaktifkan produk ini?')"><i class="fas fa-times"></i></a>
@@ -196,26 +161,59 @@
 
 <!-- Modal -->
 <?php if(in_groups('store_owner')) : ?>
-<div class="modal fade" id="d-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<?php foreach ($produk as $pmdl) :?>
+<div class="modal fade" id="d-modal-<?= $pmdl['idp'] ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title text-center" id="exampleModalLabel">Deskripsi</h5>
+                <h5 class="modal-title text-center" id="exampleModalLabel">Edit Produk</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <input type="hidden" name="idp-d">
-                <textarea name="new-description" class="form-control" id="new-description" rows="5"></textarea>
+                <div class="form-group">
+                    <label>Judul</label>
+                    <input type="text" class="form-control" id="title-<?= $pmdl['idp'] ?>" value="<?= $pmdl['title'] ?>" name="title">
+                    <input type="hidden" id="oldTitle-<?= $pmdl['idp'] ?>" value="<?= $pmdl['title'] ?>">
+                </div>
+                <div class="form-group">
+                    <label>Kategori</label>
+                    <select class="custom-select" id="curCategory-<?= $pmdl['idp'] ?>" style="width: 100%;">
+                        <?php foreach($category as $ct) : ?>
+                        <option value="<?= $ct['id'] ?>" <?= ($pmdl['category'] == $ct['category']) ? 'selected' : '' ?>><?= $ct['category'] ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                    <input type="hidden" id="oldCat-<?= $pmdl['idp'] ?>" value="<?= $pmdl['category_id'] ?>">
+                </div>
+                <div class="form-group">
+                    <label>Harga</label>
+                    <input type="number" class="form-control" id="price-<?= $pmdl['idp'] ?>" value="<?= $pmdl['price'] ?>" name="price">
+                    <input type="hidden" id="oldPrc-<?= $pmdl['idp'] ?>" value="<?= $pmdl['price'] ?>">
+                </div>
+                <div class="form-group">
+                    <label for="description">Deskripsi</label>
+                    <textarea name="newDesc-<?= $pmdl['idp'] ?>" class="form-control" id="newDesc-<?= $pmdl['idp'] ?>" rows="5"><?= html_entity_decode($pmdl['description'] ) ?></textarea>
+                    <input type="hidden" id="oldDesc-<?= $pmdl['idp'] ?>" value="<?= html_entity_decode($pmdl['description']) ?>">
+                    <button class="btn btn-primary btn-sm" id="tmblSave-<?= $pmdl['idp'] ?>">save deskripsi</button>
+                </div>
+                <div class="form-group">
+                    <label>Stok</label>
+                    <select class="form-control" id="curStock-<?= $pmdl['idp'] ?>" name="in_stock">
+                        <?php $listSt = array('Kosong', 'Pre-Order', 'Tersedia'); foreach($listSt as $cST) : ?>
+                        <option value="<?= $cST ?>" <?= ($pmdl['in_stock'] == $cST) ? 'selected' : '' ?>> <?= $cST ?></option>
+                        <?php endforeach ?>
+                    </select>
+                    <input type="hidden" id="oldStk-<?= $pmdl['idp'] ?>" value="<?= $pmdl['in_stock'] ?>">
+                </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="save-update">Save changes</button>
+
             </div>
         </div>
     </div>
 </div>
+<?php endforeach; ?>
 <?php endif; ?>
 </div>
 <!-- End of Main Content -->

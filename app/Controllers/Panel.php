@@ -16,6 +16,7 @@ class Panel extends BaseController
         $this->LOKASI = new \App\Models\M_Lokasi();
         $this->GROUPUSER = new \App\Models\M_Group_User();
         $this->Email = \Config\Services::email();
+        // $this->cachePage(5);
     }
 
     public function index()
@@ -181,15 +182,17 @@ class Panel extends BaseController
 				'errors' => $name_errors,
 			],
             'store_whatsapp' => [
-                'rules' => 'required',
+                'rules' => 'required|min_length[10]',
                 'errors' => [
-                    'required' => 'WA toko harus diisi.'
+                    'required' => 'WA toko harus diisi.',
+                    'min_length' => 'WA toko tidak boleh kurang dari 10 digit.',
                 ],
             ],
             'user_whatsapp' => [
-                'rules' => 'required',
+                'rules' => 'required|min_length[10]',
                 'errors' => [
-                    'required' => 'WA pemilik harus diisi.'
+                    'required' => 'WA pemilik harus diisi.',
+                    'min_length' => 'WA pemilik tidak boleh kurang dari 10 digit.',
                 ],
             ],
 			'customFile' => [
@@ -224,7 +227,7 @@ class Panel extends BaseController
             'id' => $id,
 			'name' => $this->request->getVar('name'),
             'slug' => $this->request->getVar('slug'),
-            'store_desc' => $this->request->getVar('store_desc'),
+            'store_desc' => htmlentities($this->request->getVar('store_desc')),
             'regency_id' => $this->request->getVar('regency'),
             'social_instagram' => $this->request->getVar('social_instagram'),
             'ext_link' => $this->request->getVar('ext_link'),
@@ -269,7 +272,7 @@ class Panel extends BaseController
                 ],
             ],
 			'customFile' => [
-				'rules' => 'uploaded[customFile]|max_size[customFile,3000]|ext_in[customFile,jpg,png,jpeg]',
+				'rules' => 'uploaded[customFile]|max_size[customFile,400]|ext_in[customFile,jpg,png,jpeg]',
 				'errors' => [
 					'uploaded' => 'Gambar tidak dipilih.',
 					'max_size' => 'Ukuran gambar terlalu besar.',
@@ -307,7 +310,7 @@ class Panel extends BaseController
 			'title' => $this->request->getVar('title'),
             'title_hash' => $this->request->getVar('title_hash'),
             'category_id' => (int)$this->request->getVar('category'),
-            'description' => $this->request->getVar('description'),
+            'description' => htmlentities($this->request->getVar('description')),
 			'image' => $fileName,
             'price' => $this->request->getVar('price'),
             'is_active' => 1,
@@ -543,7 +546,7 @@ class Panel extends BaseController
             $title = $this->request->getGet('title');
             $price = $this->request->getGet('price');
             $curCategory = $this->request->getGet('cur_category');
-            $desc = $this->request->getGet('desc');
+            $desc = htmlentities($this->request->getGet('desc'));
             $stock = $this->request->getGet('in_stock');
 
             if($price){

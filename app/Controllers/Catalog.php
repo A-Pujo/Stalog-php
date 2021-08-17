@@ -12,12 +12,21 @@ class Catalog extends BaseController
         $this->PRODUK = new \App\Models\M_Produk();
         $this->CATEGORY = new \App\Models\M_Category();
         $this->LOKASI = new \App\Models\M_Lokasi();
+        // $this->cachePage(5);
     }
 
     // Landing, Home 
     public function index()
     {
-        $produk = $this->PRODUK->join('store', 'store.id = products.store_id')->join('product_category', 'product_category.id = products.category_id')->where(['is_active' => 1, 'active' => 1,])->orderBy('idp', 'DESC');
+        if ($this->request->getVar('page') == null or $this->request->getVar('page') == '1') {
+            $this->session->set('PROD_RAND_SEED', rand(1, 119));
+        }
+
+        if (!$this->session->has('PROD_RAND_SEED')) {
+            $this->session->set('PROD_RAND_SEED', rand(1, 119));
+        }
+
+        $produk = $this->PRODUK->join('store', 'store.id = products.store_id')->join('product_category', 'product_category.id = products.category_id')->where(['is_active' => 1, 'active' => 1,])->orderBy('RAND(' . $this->session->PROD_RAND_SEED . ')');
         $data = [
             'title' => 'Beranda',
             'produk' => $produk->paginate(12),
@@ -35,7 +44,7 @@ class Catalog extends BaseController
     // login helper function
     public function userLogin()
     {
-        return redirect()->to(base_url());
+        return redirect()->to(base_url('/login'));
     }
 
     // Search
@@ -78,7 +87,7 @@ class Catalog extends BaseController
         else if ($lokasi != 'Lokasi..'){
             $prd = $produk->where(['regency_id' => $lokasi]);
         }
-
+        
         else if(! empty($price_filter)){
             $prd = $produk;
         }
@@ -206,17 +215,19 @@ class Catalog extends BaseController
                 ],
             ],
             'store_whatsapp' => [
-                'rules' => 'required|alpha_numeric',
+                'rules' => 'required|alpha_numeric|min_length[10]',
                 'errors' => [
                     'required' => 'WA toko harus diisi.',
-                    'alpha_numeric' => 'WA toko tidak boleh menganduk simbo (e.g. +/-;|)',
+                    'alpha_numeric' => 'WA toko tidak boleh mengandung simbol (e.g. +/-;|)',
+                    'min_length' => 'WA toko tidak boleh kurang dari 10 digit.',
                 ],
             ],
             'user_whatsapp' => [
-                'rules' => 'required|alpha_numeric',
+                'rules' => 'required|alpha_numeric|min_length[10]',
                 'errors' => [
                     'required' => 'WA pemilik harus diisi.',
-                    'alpha_numeric' => 'WA pemilik tidak boleh menganduk simbo (e.g. +/-;|)',
+                    'alpha_numeric' => 'WA pemilik tidak boleh mengandung simbol (e.g. +/-;|)',
+                    'min_length' => 'WA pemilik tidak boleh kurang dari 10 digit.',
                 ],
             ],
             // 'store_document' => [
@@ -257,7 +268,7 @@ class Catalog extends BaseController
 			'name' => $this->request->getVar('name'),
             'slug' => $this->request->getVar('slug'),
             'user_id' => user()->id,
-            'store_desc' => $this->request->getVar('store_desc'),
+            'store_desc' => htmlentities($this->request->getVar('store_desc')),
             'regency_id' => $this->request->getVar('regency'),
             'social_instagram' => $this->request->getVar('social_instagram'),
             'ext_link' => $this->request->getVar('ext_link'),

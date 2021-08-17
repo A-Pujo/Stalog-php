@@ -1,4 +1,9 @@
 <style>
+    @import url('https://fonts.googleapis.com/css2?family=Alegreya&display=swap');
+    @font-face {
+      font-family: brittany;
+      src: url(<?= base_url() ?>/assets/media/webfonts/Brittany.ttf);
+    }
     /* divider */
     .editorial {
         display: block;
@@ -70,13 +75,29 @@
     body{
         background-color: #DFEEEA;
     }
+    
+    .iframe-container {
+      overflow: hidden;
+      /* 16:9 aspect ratio */
+      padding-top: 56.25%;
+      position: relative;
+    }
+    
+    .iframe-container iframe {
+       border: 0;
+       height: 100%;
+       left: 0;
+       position: absolute;
+       top: 0;
+       width: 100%;
+    }
 </style>
 
 <div class="container mt-5 p-2">
     <div class="row mt-5">
         <div class="col-lg-3"></div>
         <div class="col-lg-6 col-sm-12">
-            <img src="<?= base_url('assets/img/search.svg') ?>" class="rounded mx-auto d-block w-100">
+            <img src="<?= base_url('assets/img/banner-ls.png') ?>" class="rounded mx-auto d-block w-75">
         </div>
     </div>
 </div>
@@ -103,10 +124,10 @@
 
 <div class="container-fluid bg-white py-5">
     <div class="container">
-        <h1 class="text-center">
-            Lapak Staner
+        <h1 class="text-center" style="font-family: 'Alegreya', serif;">
+            LAPAK STANER
         </h1>
-        <p class="text-center text-muted">Tempat mencari apa yang kamu cari.</p>
+        <p class="text-center text-muted" style="font-family: 'brittany', serif; font-size: 3em;margin-top: -15px;">Everything You Need.</p>
 
         <!-- search bar -->
         <?= form_open(base_url() . '/catalog/cari', ['autocomplete' => 'off', 'method' => 'get']) ?>
@@ -159,7 +180,7 @@
             ?>
             <div class="col-lg-3 my-2">
                 <div class="card shadow-sm" style="height: 300px;">
-                    <a href="<?= base_url() . '/catalog/produk/' . $k['title_hash'] ?>"><img class="card-img-top" src="<?= base_url() . '/assets/uploads/product_image/' . $k['image'][0] ?>" alt="Card image cap" style="height: 200px;"></a>
+                    <a href="<?= base_url() . '/catalog/produk/' . $k['title_hash'] ?>"><img class="card-img-top" src="<?= base_url() . '/assets/uploads/product_image/' . $k['image'][0] ?>" alt="<?= $k['title'] ?>" style="height: 200px;"></a>
                     <div class="card-body">
                         <h6 class="card-title"><a href="<?= base_url() . '/catalog/produk/' . $k['title_hash'] ?>" style="font-size: 1rem;"><?= (strlen($k['title']) > 20) ? substr($k['title'], 0, 20) . '..' : $k['title'] ?></a></h6>
                         <!-- <p class="card-text"><?= (strlen($k['description']) > 30) ? substr($k['description'], 0, 30) . '..' : $k['description'] ?></p> -->
@@ -183,6 +204,5 @@
     <?php else : ?>
     <?= $pager->links() ?>
     <?php endif; ?>
-    
 
 </div>
